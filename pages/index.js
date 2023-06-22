@@ -16,7 +16,8 @@ export async function getStaticProps() {
   return { 
     props: {
       events: featuredEvents
-    }
+    },
+    revalidate: 1800 // every 1800 seconds we re-generate this page for a new incoming request
   }
 }
 

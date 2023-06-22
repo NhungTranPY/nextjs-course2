@@ -2,7 +2,7 @@ import EventContent from "@/components/event-detail/event-content"
 import EventLogistics from "@/components/event-detail/event-logistics"
 import EventSummary from "@/components/event-detail/event-summary"
 import ErrorAlert from "@/components/ui/error-alert"
-import { getEventById, getAllEvents } from "../../helpers/api-util"
+import { getEventById, getFeaturedEvents } from "../../helpers/api-util"
 
 function EventDetailPage(props) {
 
@@ -43,18 +43,20 @@ export async function getStaticProps(context) {
     return {
         props: {
             selectedEvent: event
-        }
+        },
+        revalidate: 30
     }
 }
 
 export async function getStaticPaths() {
-    const events = await getAllEvents()
+    const events = await getFeaturedEvents()
 
     const paths = events.map(event => ({ params: {eventId: event.id}}))
 
     return {
         paths: paths,
-        fallback: false // to let Nextjs knows if load this file for unknown id then render 404
+        // fallback: false // to let Nextjs knows if load this file for unknown id then render 404
+        fallback: 'blocking' // wait until all possible pages pre-rendering then show the one that we need
     }
 }
 
