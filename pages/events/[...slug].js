@@ -6,8 +6,9 @@ import Button from "@/components/ui/button"
 import ErrorAlert from "@/components/ui/error-alert"
 import useSwr from 'swr'
 import { useEffect, useState } from "react"
+import Head from "next/head"
 
-function FilterEventsPage(props) {
+function FilterEventsPage() {
     const [loadedEvents, setloadedEvents] = useState()
     const router = useRouter()
 
@@ -60,6 +61,7 @@ function FilterEventsPage(props) {
             </>            
         )
     }
+    }
 
     const filteredEvents = loadedEvents.filter((event) => {
         const eventDate = new Date(event.date);
@@ -84,12 +86,16 @@ function FilterEventsPage(props) {
 
     return (
         <>
+            <Head>
+                <title>Filtered Events</title>
+                <meta name='description' content={`All events for ${numMonth}/${numYear}`} />
+            </Head>
             <ResultsTitle date={date} />
             <EventList items={filteredEvents} />
         </>
     )
 }
-}
+
 
 // export async function getServerSideProps(context) {
 
