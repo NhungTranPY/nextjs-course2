@@ -4,6 +4,7 @@ import EventSummary from "@/components/event-detail/event-summary"
 import ErrorAlert from "@/components/ui/error-alert"
 import { getEventById, getFeaturedEvents } from "../../helpers/api-util"
 import Head from "next/head"
+import Comments from "@/components/input/comments"
 
 function EventDetailPage(props) {
 
@@ -36,6 +37,7 @@ function EventDetailPage(props) {
             <EventContent>
                 <p>{event.description}</p>
             </EventContent>
+            <Comments eventId={event.id} />
         </>
     )
 }
