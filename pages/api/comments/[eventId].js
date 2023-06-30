@@ -40,11 +40,16 @@ async function handler(req, res) {
     }
     
     if (req.method === 'GET') {
-        const dummyList = [
-            { id: 'c1', name: 'Nina1', text: 'A first comment!' },
-            { id: 'c2', name: 'Nina2', text: 'A second comment!' }
-        ]
-        res.status(200).json({comments: dummyList})
+        
+        const db = client.db()
+
+        const documents = await db
+            .collection('comments')
+            .find()
+            .sort({ _id: -1 }) // the latest comment will be on the top
+            .toArray()
+
+        res.status(200).json({comments: documents})
     }
 
     client.close()
