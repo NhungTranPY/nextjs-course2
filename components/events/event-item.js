@@ -15,9 +15,9 @@ function EventItem(props) {
         year: 'numeric'
     })
 
-    const formattedAddress = location.replace(', ', '\n') // means thay the (,) bang line break trong address
+    const formattedAddress = location.replace(', ', '\n'); // means thay the (,) bang line break trong address
 
-    const exploredLink = `/events/${id}`
+    const exploreLink = `/events/${id}`
 
     return (
         <li className={classes.item}>
@@ -35,7 +35,7 @@ function EventItem(props) {
                     </div>
                 </div>
                 <div className={classes.action}>
-                    <Button link={exploredLink}>
+                    <Button link={exploreLink}>
                         <span>Explore Event</span>
                         <span className={classes.icon}>
                             <ArrowRightIcon />

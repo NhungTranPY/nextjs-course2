@@ -10,11 +10,11 @@ async function handler(req, res) {
         }
         // console.log(userEmail);
         // connect with mongodb
-        const client = await MongoClient.connect('mongodb+srv://next1:cAuBBvW907wnb9lt@cluster0.3bfai.mongodb.net/newsletter?retryWrites=true&w=majority')
+        const client = await MongoClient.connect('mongodb+srv://next1:cAuBBvW907wnb9lt@cluster0.3bfai.mongodb.net/events?retryWrites=true&w=majority')
         
         const db = client.db() 
         
-        await db.collection('emails').insertOne({email: userEmail})
+        await db.collection('newsletter').insertOne({email: userEmail})
         
         client.close()
         
