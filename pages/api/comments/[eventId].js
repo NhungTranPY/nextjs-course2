@@ -1,10 +1,17 @@
-import {MongoClient} from 'mongodb'
+import {connectDatabase, insertDocument, getAllDocuments} from '../../../helpers/db-util'
 
 async function handler(req, res) {
 
     const eventId = req.query.eventId
 
-    const client = await MongoClient.connect('mongodb+srv://next1:cAuBBvW907wnb9lt@cluster0.3bfai.mongodb.net/events?retryWrites=true&w=majority')
+    let client
+
+    try {
+        client = await connectDatabase()
+    } catch (error) {
+        res.status(500).json({message: 'Connecting to the database failed!'})
+        return
+    }   
 
     if (req.method === 'POST') {
         const { email, name, text } = req.body
@@ -17,6 +24,7 @@ async function handler(req, res) {
             text.trim() === ''
         ) {
             res.status(422).json({message: 'Invalid input'})
+            client.close()
             return
         }
 
@@ -27,29 +35,25 @@ async function handler(req, res) {
             eventId
         }
 
-        // console.log(newComment);
-        const db = client.db()
+        let result
 
-        const result = await db.collection('comments').insertOne(newComment)
-
-        console.log(result);
-
-        newComment.id = result.insertedId
-
-        res.status(201).json({message: 'Added comments.', comment: newComment})
+        try {
+            result = await insertDocument(client, 'comments', newComment)
+            newComment._id = result.insertedId
+            res.status(201).json({message: 'Added comments.', comment: newComment})
+        } catch (error) {
+            res.status(500).json({message: 'Inserting comment failed!'})
+        }
     }
     
     if (req.method === 'GET') {
-        
-        const db = client.db()
 
-        const documents = await db
-            .collection('comments')
-            .find()
-            .sort({ _id: -1 }) // the latest comment will be on the top
-            .toArray()
-
-        res.status(200).json({comments: documents})
+        try {
+            documents = await getAllDocuments(client, 'comments', { _id: -1 }) // { _id: -1 } the latest comment will be on the top
+            res.status(200).json({comments: documents})
+        } catch (error) {
+            res.status(500).json({message: 'Getting comments failed.'})
+        }
     }
 
     client.close()
